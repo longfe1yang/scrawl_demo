@@ -33,7 +33,7 @@ def request_info(url):
 
 
 def get_pages_num(soup):
-    pages = soup.select('#s_position_list > div.item_con_pager > div > a:nth-of-type(5)')
+    pages = soup.select('#s_position_list > div.item_con_pager > div > a:nth-of-type(5)')[0].get_text()
     pages = pages if pages.isdigit() else len(soup.select('#s_position_list > div.item_con_pager > div > a')) - 2
     # print('debug', pages)
     return pages
@@ -51,6 +51,7 @@ def format_salary(s):
 
 
 def caculate(lst):
+      # todo, 整理冗余的，可以携程函数
     one_to_three_n = one_to_three_l = one_to_three_h = 0
     three_to_five_n = three_to_five_l = three_to_five_h = 0
     for i in lst:
@@ -65,6 +66,7 @@ def caculate(lst):
             three_to_five_l += int(format_salary(i['salary'])[0])
             three_to_five_h += int(format_salary(i['salary'])[1])
     print('1-3', one_to_three_n, '3-5', three_to_five_n)
+    # todo, 区别除数为零的情况
     print('1-3年平均:',
           round(one_to_three_l / one_to_three_n, 2), '到',
           round(one_to_three_h / one_to_three_n, 2))
@@ -74,11 +76,11 @@ def caculate(lst):
 
 
 def request_main(root_url):
+      # todo, url变量更改为更容易操作的，不用每次修改这个URL
     url = 'https://www.lagou.com/zhaopin/Node.js/{}/?filterOption=2'
     f = requests.get(root_url, headers=headers)
     soup = BeautifulSoup(f.text, 'lxml')
-    # page_num = int(get_pages_num(soup))
-    page_num = 3
+    page_num = int(get_pages_num(soup))
     total = []
     for i in range(1, page_num + 1):
         total.extend(request_info(url.format(str(i))))
@@ -87,6 +89,7 @@ def request_main(root_url):
 
 
 def main():
+    # todo
     request_main('https://www.lagou.com/zhaopin/Node.js/1/?filterOption=2')
 
 
